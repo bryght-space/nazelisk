@@ -13,8 +13,9 @@ let
     let
       p        = builtins.getAttr version revisions;
       revision = builtins.elemAt p 0;
-      items    = builtins.tail p;
       f        = n: getByRevision revision n;
+      bazel    = f (builtins.elemAt p 1);
+      jdk      = f (builtins.elemAt p 2);
     in
-      builtins.map f items;
+      {inherit bazel jdk; all = [bazel jdk];};
 in path : getByVersion (trim (builtins.readFile (toString "${toString path}/.bazelversion")))
